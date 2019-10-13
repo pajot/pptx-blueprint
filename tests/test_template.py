@@ -2,6 +2,7 @@
 from pptx_blueprint import Template
 from pathlib import Path
 import pytest
+import re
 
 
 @pytest.fixture
@@ -43,3 +44,11 @@ def test_get_all_shapes(template):
     shapes = template._get_all_shapes()
     for shape in shapes:
         assert str(shape.text) and str(shape.name)
+
+def test_copy_tags_to_name(template):
+    template._copy_tags_to_name()
+    all_shapes = template._get_all_shapes()
+    regex_tag = re.compile(r'\{[\s\w]*\}')
+    for shape in all_shapes:
+        if regex_tag.match(shape.text):
+            assert shape.text == shape.name

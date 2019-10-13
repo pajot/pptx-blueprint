@@ -1,5 +1,6 @@
 import pathlib
 import pptx
+import re
 from typing import Union, Iterable, Tuple
 from pptx.shapes.base import BaseShape
 
@@ -18,6 +19,7 @@ class Template:
         """
         self._template_path = filename
         self._presentation = pptx.Presentation(filename)
+        self._copy_tags_to_name()
         pass
 
     def replace_text(self, label: str, new_text: str) -> None:
@@ -66,7 +68,7 @@ class Template:
         matched_shapes = []
 
         def _find_shapes_in_slide(slide):
-            return filter(lambda shape: shape.text == f'{{{tag_name}}}', slide.shapes)
+            return filter(lambda shape: shape.name == f'{{{tag_name}}}', slide.shapes)
 
         if slide_number == '*':
             slides = self._presentation.slides
@@ -83,8 +85,18 @@ class Template:
         return matched_shapes
 
     def _get_all_shapes(self) -> Iterable[BaseShape]:
+        # Do we need all the shapes? Perhaps we should filter on tags here.
         all_shapes = [shape for slide in self._presentation.slides for shape in slide.shapes]
         return all_shapes
+
+    def _copy_tags_to_name(self) -> None:
+        all_shapes = self._get_all_shapes()
+        # This regex matches on tags
+        regex_tag = re.compile(r'\{[\s\w]*\}')
+        for shape in all_shapes:
+            # We only copy contents we recognize as tags
+            if regex_tag.match(shape.text):
+                shape.name = shape.text
 
     def save(self, filename: _Pathlike) -> None:
         """Saves the updated pptx to the specified filepath.
