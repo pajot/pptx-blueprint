@@ -82,6 +82,10 @@ class Template:
 
         return matched_shapes
 
+    def _get_all_shapes(self) -> Iterable[BaseShape]:
+        all_shapes = [shape for slide in self._presentation.slides for shape in slide.shapes]
+        return all_shapes
+
     def save(self, filename: _Pathlike) -> None:
         """Saves the updated pptx to the specified filepath.
 

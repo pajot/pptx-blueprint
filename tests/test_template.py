@@ -38,3 +38,8 @@ def test_find_shapes_from_one_slide(template):
 def test_find_shapes_index_out_of_range(template):
     with pytest.raises(IndexError):
         shapes = template._find_shapes(0, 'logo')
+
+def test_get_all_shapes(template):
+    shapes = template._get_all_shapes()
+    for shape in shapes:
+        assert str(shape.text) and str(shape.name)
