@@ -92,7 +92,7 @@ class Template:
     def _copy_tags_to_name(self) -> None:
         all_shapes = self._get_all_shapes()
         # This regex matches on tags
-        regex_tag = re.compile(r'\{[\s\w]*\}')
+        regex_tag = re.compile(r'^\s*(\{\w+\})\s*$')
         for shape in all_shapes:
             # We only copy contents we recognize as tags
             if regex_tag.match(shape.text):
