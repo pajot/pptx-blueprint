@@ -100,8 +100,9 @@ class Template:
         regex_tag = re.compile(r'^\s*(\{\w+\})\s*$')
         for shape in all_shapes:
             # We only copy contents we recognize as tags
-            if regex_tag.match(shape.text):
-                shape.name = regex_tag.group(1)
+            match = regex_tag.match(shape.text)
+            if match:
+                shape.name = match.group(1)
 
     def save(self, filename: _Pathlike) -> None:
         """Saves the updated pptx to the specified filepath.
